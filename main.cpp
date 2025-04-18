@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <math.h>
 
-const char kWindowTitle[] = "LC1B_17_ナガサワタカユキ_行列計算";
+const char kWindowTitle[] = "LD2B_04_ナガサワタカユキ_行列計算";
 
 //==================================
 // 構造体
