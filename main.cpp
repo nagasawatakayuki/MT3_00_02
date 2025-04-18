@@ -2,11 +2,11 @@
 #include <stdio.h>
 #include <math.h>
 
-const char kWindowTitle[] = "LD2B_04_ナガサワタカユキ_行列計算";
+const char kWindowTitle[] = "LC1B_17_ナガサワタカユキ_行列計算";
 
-//=================================
+//==================================
 // 構造体
-//=================================
+//==================================
 
 struct Vector3 {
 	float x;
@@ -18,9 +18,9 @@ struct Matrix4x4 {
 	float m[4][4];
 };
 
-//=================================
+//==================================
 // 行列関数
-//=================================
+//==================================
 
 // 平行移動行列の作成
 Matrix4x4 MakeTranslateMatrix(const Vector3& translate) {
@@ -42,11 +42,11 @@ Matrix4x4 MakeScaleMatrix(const Vector3& scale) {
 	return matrix;
 }
 
-//=================================
+//==================================
 // 変換関数
-//=================================
+//==================================
 
-// ベクトルと行列の積 (変換)
+// ベクトルと行列の積 (座標変換)
 Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix) {
 	Vector3 result;
 	result.x = vector.x * matrix.m[0][0] + vector.y * matrix.m[1][0] + vector.z * matrix.m[2][0] + 1.0f * matrix.m[3][0];
@@ -55,20 +55,20 @@ Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix) {
 	return result;
 }
 
-//=================================
+//==================================
 // 描画関数
-//=================================
+//==================================
 
 void MatrixScreenPrint(int x, int y, const Matrix4x4& matrix, const char* label) {
 	Novice::ScreenPrintf(x, y, "%s", label);
 	for (int i = 0; i < 4; ++i) {
-		Novice::ScreenPrintf(x, y + (i + 1) * 20, "  %.2f  %.2f  %.2f  %.2f",
+		Novice::ScreenPrintf(x, y + (i + 1) * 20, "[%.2f, %.2f, %.2f, %.2f]",
 			matrix.m[i][0], matrix.m[i][1], matrix.m[i][2], matrix.m[i][3]);
 	}
 }
 
 void VectorScreenPrint(int x, int y, const Vector3& vector, const char* label) {
-	Novice::ScreenPrintf(x, y, "%s  %.2f  %.2f  %.2f", label, vector.x, vector.y, vector.z);
+	Novice::ScreenPrintf(x, y, "%s [%.2f, %.2f, %.2f]", label, vector.x, vector.y, vector.z);
 }
 
 const int kRowHeight = 20;
@@ -83,15 +83,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
 
-	// 変数の初期化
-	Vector3 translate = { 4.1f, 2.6f, 0.8f };
-	Vector3 scale = { 1.5f, 5.2f, 7.3f };
-	Vector3 point = { 2.3f, 3.8f, 1.4f };
+	// 一枚目の写真の初期設定の数値
+	Vector3 translate = { 0.71f, 0.67f, 0.60f };
+	Vector3 scale = { 1.00f, 1.00f, 1.00f }; // ← scale の初期値も写真に合わせてみた
+	Vector3 point = { 0.00f, 0.00f, 0.00f }; // ← point の初期値も写真に合わせてみた
 
 	Matrix4x4 translateMatrix = MakeTranslateMatrix(translate);
 	Matrix4x4 scaleMatrix = MakeScaleMatrix(scale);
 	Matrix4x4 transformMatrix;
 
+	// 完成イメージの順序に合わせて スケール -> 移動 で合成
 	for (int i = 0; i < 4; ++i) {
 		for (int j = 0; j < 4; ++j) {
 			transformMatrix.m[i][j] = 0.0f;
@@ -115,7 +116,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓更新処理ここから
 		///
-		
+		// キー入力による数値操作処理はカット
 		///
 		/// ↑更新処理ここまで
 		///
@@ -124,11 +125,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 		
-		VectorScreenPrint(0, 0, transformed, "transformed"); 
+		VectorScreenPrint(0, 0, transformed, "transformed");
 		MatrixScreenPrint(0, kRowHeight * 2, translateMatrix, "translateMatrix");
-
 		MatrixScreenPrint(0, kRowHeight * 7, scaleMatrix, "scaleMatrix");
-
+		MatrixScreenPrint(0, kRowHeight * 12, transformMatrix, "transformMatrix");
 
 		///
 		/// ↑描画処理ここまで
