@@ -113,7 +113,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓更新処理ここから
 		///
-		// 今回は初期値の表示なので更新処理は特にありません
+
 		///
 		/// ↑更新処理ここまで
 		///
@@ -124,8 +124,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		MatrixScreenPrint(0, 0, rotateXMatrix, "rotateXMatrix");
 		MatrixScreenPrint(0, kRowHeight * 5, rotateYMatrix, "rotateYMatrix");
-		MatrixScreenPrint(0, kRowHeight * 10, rotateZMatrix, "rotateZMatrix"); // Z軸をY軸の上に配置
-		MatrixScreenPrint(0, kRowHeight * 15, rotateXYZMatrix, "rotateXYZMatrix"); // 全体回転行列をY軸の下に配置
+		MatrixScreenPrint(0, kRowHeight * 10, rotateZMatrix, "rotateZMatrix");
+		MatrixScreenPrint(0, kRowHeight * 15, rotateXYZMatrix, "rotateXYZMatrix");
 
 		///
 		/// ↑描画処理ここまで
