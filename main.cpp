@@ -83,16 +83,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
 
-	// 一枚目の写真の初期設定の数値
+	// 変数の初期化
 	Vector3 translate = { 0.71f, 0.67f, 0.60f };
-	Vector3 scale = { 1.00f, 1.00f, 1.00f }; // ← scale の初期値も写真に合わせてみた
-	Vector3 point = { 0.00f, 0.00f, 0.00f }; // ← point の初期値も写真に合わせてみた
+	Vector3 scale = { 1.00f, 1.00f, 1.00f }; 
+	Vector3 point = { 0.00f, 0.00f, 0.00f }; 
 
 	Matrix4x4 translateMatrix = MakeTranslateMatrix(translate);
 	Matrix4x4 scaleMatrix = MakeScaleMatrix(scale);
 	Matrix4x4 transformMatrix;
 
-	// 完成イメージの順序に合わせて スケール -> 移動 で合成
 	for (int i = 0; i < 4; ++i) {
 		for (int j = 0; j < 4; ++j) {
 			transformMatrix.m[i][j] = 0.0f;
@@ -116,7 +115,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓更新処理ここから
 		///
-		// キー入力による数値操作処理はカット
+		
 		///
 		/// ↑更新処理ここまで
 		///
