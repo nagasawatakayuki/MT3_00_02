@@ -2,11 +2,8 @@
 #include <stdio.h>
 #include <math.h>
 
-const char kWindowTitle[] = "LC1B_17_ナガサワタカユキ_行列計算";
+const char kWindowTitle[] = "LD2B_04_ナガサワタカユキ_回転行列";
 
-//==================================
-// 構造体
-//==================================
 
 struct Vector3 {
 	float x;
@@ -18,57 +15,57 @@ struct Matrix4x4 {
 	float m[4][4];
 };
 
-//==================================
-// 行列関数
-//==================================
-
-// 平行移動行列の作成
-Matrix4x4 MakeTranslateMatrix(const Vector3& translate) {
+// X軸回転行列の作成
+Matrix4x4 MakeRotateXMatrix(float radian) {
 	Matrix4x4 matrix;
-	matrix.m[0][0] = 1.0f; matrix.m[0][1] = 0.0f; matrix.m[0][2] = 0.0f; matrix.m[0][3] = 0.0f;
-	matrix.m[1][0] = 0.0f; matrix.m[1][1] = 1.0f; matrix.m[1][2] = 0.0f; matrix.m[1][3] = 0.0f;
-	matrix.m[2][0] = 0.0f; matrix.m[2][1] = 0.0f; matrix.m[2][2] = 1.0f; matrix.m[2][3] = 0.0f;
-	matrix.m[3][0] = translate.x; matrix.m[3][1] = translate.y; matrix.m[3][2] = translate.z; matrix.m[3][3] = 1.0f;
+	matrix.m[0][0] = 1.0f; matrix.m[0][1] = 0.0f;         matrix.m[0][2] = 0.0f;          matrix.m[0][3] = 0.0f;
+	matrix.m[1][0] = 0.0f; matrix.m[1][1] = cosf(radian);  matrix.m[1][2] = sinf(radian);  matrix.m[1][3] = 0.0f;
+	matrix.m[2][0] = 0.0f; matrix.m[2][1] = -sinf(radian); matrix.m[2][2] = cosf(radian);  matrix.m[2][3] = 0.0f;
+	matrix.m[3][0] = 0.0f; matrix.m[3][1] = 0.0f;         matrix.m[3][2] = 0.0f;          matrix.m[3][3] = 1.0f;
 	return matrix;
 }
 
-// 拡大縮小行列の作成
-Matrix4x4 MakeScaleMatrix(const Vector3& scale) {
+// Y軸回転行列の作成
+Matrix4x4 MakeRotateYMatrix(float radian) {
 	Matrix4x4 matrix;
-	matrix.m[0][0] = scale.x; matrix.m[0][1] = 0.0f; matrix.m[0][2] = 0.0f; matrix.m[0][3] = 0.0f;
-	matrix.m[1][0] = 0.0f; matrix.m[1][1] = scale.y; matrix.m[1][2] = 0.0f; matrix.m[1][3] = 0.0f;
-	matrix.m[2][0] = 0.0f; matrix.m[2][1] = 0.0f; matrix.m[2][2] = scale.z; matrix.m[2][3] = 0.0f;
-	matrix.m[3][0] = 0.0f; matrix.m[3][1] = 0.0f; matrix.m[3][2] = 0.0f; matrix.m[3][3] = 1.0f;
+	matrix.m[0][0] = cosf(radian);  matrix.m[0][1] = 0.0f; matrix.m[0][2] = -sinf(radian); matrix.m[0][3] = 0.0f;
+	matrix.m[1][0] = 0.0f;         matrix.m[1][1] = 1.0f; matrix.m[1][2] = 0.0f;          matrix.m[1][3] = 0.0f;
+	matrix.m[2][0] = sinf(radian);  matrix.m[2][1] = 0.0f; matrix.m[2][2] = cosf(radian);  matrix.m[2][3] = 0.0f;
+	matrix.m[3][0] = 0.0f;         matrix.m[3][1] = 0.0f; matrix.m[3][2] = 0.0f;          matrix.m[3][3] = 1.0f;
 	return matrix;
 }
 
-//==================================
-// 変換関数
-//==================================
+// Z軸回転行列の作成
+Matrix4x4 MakeRotateZMatrix(float radian) {
+	Matrix4x4 matrix;
+	matrix.m[0][0] = cosf(radian);  matrix.m[0][1] = sinf(radian);  matrix.m[0][2] = 0.0f; matrix.m[0][3] = 0.0f;
+	matrix.m[1][0] = -sinf(radian); matrix.m[1][1] = cosf(radian);  matrix.m[1][2] = 0.0f; matrix.m[1][3] = 0.0f;
+	matrix.m[2][0] = 0.0f;         matrix.m[2][1] = 0.0f;          matrix.m[2][2] = 1.0f; matrix.m[2][3] = 0.0f;
+	matrix.m[3][0] = 0.0f;         matrix.m[3][1] = 0.0f;          matrix.m[3][2] = 0.0f; matrix.m[3][3] = 1.0f;
+	return matrix;
+}
 
-// ベクトルと行列の積 (座標変換)
-Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix) {
-	Vector3 result;
-	result.x = vector.x * matrix.m[0][0] + vector.y * matrix.m[1][0] + vector.z * matrix.m[2][0] + 1.0f * matrix.m[3][0];
-	result.y = vector.x * matrix.m[0][1] + vector.y * matrix.m[1][1] + vector.z * matrix.m[2][1] + 1.0f * matrix.m[3][1];
-	result.z = vector.x * matrix.m[0][2] + vector.y * matrix.m[1][2] + vector.z * matrix.m[2][2] + 1.0f * matrix.m[3][2];
+// 行列の積
+Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
+	Matrix4x4 result;
+	for (int i = 0; i < 4; ++i) {
+		for (int j = 0; j < 4; ++j) {
+			result.m[i][j] = 0.0f;
+			for (int k = 0; k < 4; ++k) {
+				result.m[i][j] += m1.m[i][k] * m2.m[k][j];
+			}
+		}
+	}
 	return result;
 }
 
-//==================================
-// 描画関数
-//==================================
-
+// Matrix4x4の内容を画面に表示する関数
 void MatrixScreenPrint(int x, int y, const Matrix4x4& matrix, const char* label) {
 	Novice::ScreenPrintf(x, y, "%s", label);
 	for (int i = 0; i < 4; ++i) {
-		Novice::ScreenPrintf(x, y + (i + 1) * 20, "[%.2f, %.2f, %.2f, %.2f]",
+		Novice::ScreenPrintf(x, y + (i + 1) * 20, "  %.2f  %.2f  %.2f  %.2f",
 			matrix.m[i][0], matrix.m[i][1], matrix.m[i][2], matrix.m[i][3]);
 	}
-}
-
-void VectorScreenPrint(int x, int y, const Vector3& vector, const char* label) {
-	Novice::ScreenPrintf(x, y, "%s [%.2f, %.2f, %.2f]", label, vector.x, vector.y, vector.z);
 }
 
 const int kRowHeight = 20;
@@ -83,26 +80,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
 
-	// 一枚目の写真の初期設定の数値
-	Vector3 translate = { 0.71f, 0.67f, 0.60f };
-	Vector3 scale = { 1.00f, 1.00f, 1.00f }; // ← scale の初期値も写真に合わせてみた
-	Vector3 point = { 0.00f, 0.00f, 0.00f }; // ← point の初期値も写真に合わせてみた
+	// 回転角度の初期化 (完成イメージの数値)
+	Vector3 rotate = { 0.4f, 1.43f, -0.8f };
 
-	Matrix4x4 translateMatrix = MakeTranslateMatrix(translate);
-	Matrix4x4 scaleMatrix = MakeScaleMatrix(scale);
-	Matrix4x4 transformMatrix;
+	// 各軸の回転行列
+	Matrix4x4 rotateXMatrix = MakeRotateXMatrix(rotate.x);
+	Matrix4x4 rotateYMatrix = MakeRotateYMatrix(rotate.y);
+	Matrix4x4 rotateZMatrix = MakeRotateZMatrix(rotate.z);
 
-	// 完成イメージの順序に合わせて スケール -> 移動 で合成
-	for (int i = 0; i < 4; ++i) {
-		for (int j = 0; j < 4; ++j) {
-			transformMatrix.m[i][j] = 0.0f;
-			for (int k = 0; k < 4; ++k) {
-				transformMatrix.m[i][j] += scaleMatrix.m[i][k] * translateMatrix.m[k][j];
-			}
-		}
-	}
-
-	Vector3 transformed = Transform(point, transformMatrix);
+	// 全体の回転行列 (完成イメージでは X -> Y -> Z の順で合成)
+	Matrix4x4 rotateXYZMatrix = Multiply(rotateXMatrix, Multiply(rotateYMatrix, rotateZMatrix));
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -116,7 +103,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓更新処理ここから
 		///
-		// キー入力による数値操作処理はカット
+		// 今回は初期値の表示なので更新処理は特にありません
 		///
 		/// ↑更新処理ここまで
 		///
@@ -124,11 +111,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓描画処理ここから
 		///
-		
-		VectorScreenPrint(0, 0, transformed, "transformed");
-		MatrixScreenPrint(0, kRowHeight * 2, translateMatrix, "translateMatrix");
-		MatrixScreenPrint(0, kRowHeight * 7, scaleMatrix, "scaleMatrix");
-		MatrixScreenPrint(0, kRowHeight * 12, transformMatrix, "transformMatrix");
+
+		// 完成イメージの配置とラベルで表示
+		MatrixScreenPrint(0, 0, rotateXMatrix, "rotateXMatrix");
+		MatrixScreenPrint(0, kRowHeight * 5, rotateYMatrix, "rotateYMatrix");
+		MatrixScreenPrint(0, kRowHeight * 10, rotateZMatrix, "rotateZMatrix"); // Z軸をY軸の上に配置
+		MatrixScreenPrint(0, kRowHeight * 15, rotateXYZMatrix, "rotateXYZMatrix"); // 全体回転行列をY軸の下に配置
 
 		///
 		/// ↑描画処理ここまで
