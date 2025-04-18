@@ -4,6 +4,9 @@
 
 const char kWindowTitle[] = "LD2B_04_ナガサワタカユキ_回転行列";
 
+//==================================
+// 構造体
+//==================================
 
 struct Vector3 {
 	float x;
@@ -14,6 +17,10 @@ struct Vector3 {
 struct Matrix4x4 {
 	float m[4][4];
 };
+
+//==================================
+// 行列関数
+//==================================
 
 // X軸回転行列の作成
 Matrix4x4 MakeRotateXMatrix(float radian) {
@@ -59,7 +66,10 @@ Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
 	return result;
 }
 
-// Matrix4x4の内容を画面に表示する関数
+//==================================
+// 描画関数
+//==================================
+
 void MatrixScreenPrint(int x, int y, const Matrix4x4& matrix, const char* label) {
 	Novice::ScreenPrintf(x, y, "%s", label);
 	for (int i = 0; i < 4; ++i) {
@@ -80,7 +90,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
 
-	// 回転角度の初期化 (完成イメージの数値)
+	// 回転角度の初期化
 	Vector3 rotate = { 0.4f, 1.43f, -0.8f };
 
 	// 各軸の回転行列
@@ -88,7 +98,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Matrix4x4 rotateYMatrix = MakeRotateYMatrix(rotate.y);
 	Matrix4x4 rotateZMatrix = MakeRotateZMatrix(rotate.z);
 
-	// 全体の回転行列 (完成イメージでは X -> Y -> Z の順で合成)
+	// 全体の回転行列
 	Matrix4x4 rotateXYZMatrix = Multiply(rotateXMatrix, Multiply(rotateYMatrix, rotateZMatrix));
 
 	// ウィンドウの×ボタンが押されるまでループ
@@ -112,7 +122,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
-		// 完成イメージの配置とラベルで表示
 		MatrixScreenPrint(0, 0, rotateXMatrix, "rotateXMatrix");
 		MatrixScreenPrint(0, kRowHeight * 5, rotateYMatrix, "rotateYMatrix");
 		MatrixScreenPrint(0, kRowHeight * 10, rotateZMatrix, "rotateZMatrix"); // Z軸をY軸の上に配置
